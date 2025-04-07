@@ -194,7 +194,11 @@ resource "aws_batch_job_queue" "task" {
   name                 = "${var.environment_tag}-task"
   state                = "ENABLED"
   priority             = 1
-  compute_environments = [aws_batch_compute_environment.task.arn]
+  compute_environment_order {
+    order = 0
+    compute_environment = aws_batch_compute_environment.task.arn
+  }
+  #compute_environments = [aws_batch_compute_environment.task.arn]
 }
 
 # EC2 On Demand fallback task environment+queue (for possible use after exhausting spot retries;
@@ -230,7 +234,10 @@ resource "aws_batch_job_queue" "task_fallback" {
   name                 = "${var.environment_tag}-task-fallback"
   state                = "ENABLED"
   priority             = 1
-  compute_environments = [aws_batch_compute_environment.task_fallback.arn]
+  compute_environment_order {
+    order = 0
+    compute_environment = aws_batch_compute_environment.task_fallback.arn
+  }
 }
 
 # FARGATE workflow environment+queue
@@ -258,7 +265,10 @@ resource "aws_batch_job_queue" "workflow" {
   name                 = "${var.environment_tag}-workflow"
   state                = "ENABLED"
   priority             = 1
-  compute_environments = [aws_batch_compute_environment.workflow.arn]
+  compute_environment_order {
+    order = 0
+    compute_environment = aws_batch_compute_environment.workflow.arn
+  }
 
   # miniwdl-aws-submit only needs to be given the workflow queue name because it detects other
   # infrastructure defaults from these tags.
